@@ -1,3 +1,4 @@
+from utils.claude import ClaudeClient
 from utils.gemini import GeminiClient
 from utils.openai import OpenAIClient
 from utils.azure_openai import AzureOpenAIClient
@@ -18,8 +19,8 @@ model_names = {
         "gemini-2.5-pro": "gemini-2.5-pro"
     },
     "Anthropic": {
+        "claude-3-5-haiku": "claude-3-5-haiku-20241022",
         "claude-3-5-sonnet": "claude-3-5-sonnet-20240620",
-        "claude-3-5-haiku": "claude-3-5-haiku-20240307",
         "claude-3-7-sonnet": "claude-3-7-sonnet-20250219"
     }
 }
@@ -36,5 +37,5 @@ class LLMProvider:
             return AzureOpenAIClient(model_name=self.model_name)
         elif self.client_name == "Google":
             return GeminiClient(model_name=self.model_name)
-        # elif self.client_name == "Anthropic":
-        #     return AnthropicClient(model_name=self.model_name)
+        elif self.client_name == "Anthropic":
+            return ClaudeClient(model_name=self.model_name)

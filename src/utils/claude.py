@@ -24,13 +24,16 @@ class ClaudeClient:
             ]
         )
 
-        return response.choices[0].message.content
+        return response.content[0].text
     
     def generate_content_with_image(self, system_prompt, user_prompt, image_url):
-        _, base64_data = image_url.split(',', 1)
+        header, base64_data = image_url.split(',', 1)
+        media_type = header.split(';')[0].split(':')[1]
         response = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model=self.model_name,
             system=system_prompt,
+            max_tokens=1000,
+            temperature=0,
             messages=[
                 {
                     "role": "user",
@@ -39,7 +42,7 @@ class ClaudeClient:
                             "type": "image",
                             "source": {
                                 "type": "base64",
-                                "media_type": "image/jpeg",
+                                "media_type": media_type,
                                 "data": base64_data,
                             },
                         },
@@ -52,4 +55,4 @@ class ClaudeClient:
             ],
         )
 
-        return response.choices[0].message.content
+        return response.content[0].text
