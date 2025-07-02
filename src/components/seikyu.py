@@ -13,7 +13,7 @@ def seikyu(
 ):
     st.title("請求書解析アプリ 📄")
 
-    input_files = st.file_uploader("画像を選択してください", type=["png", "jpg", "jpeg"], accept_multiple_files=True)
+    input_files = st.file_uploader("画像やPDFを選択してください", type=["png", "jpg", "jpeg", "tif", "pdf"], accept_multiple_files=True)
     with st.expander("プロンプト詳細設定", expanded=False):
         system_prompt = st.text_area("システムプロンプト", value=config["prompts"]["system_prompt"])
         user_prompt = st.text_area("ユーザープロンプト", value=config["prompts"]["user_prompt"])
@@ -32,15 +32,17 @@ def seikyu(
             st.markdown(f"---")
             st.info(f"**{input_file.name}** を解析中...")
             try:
-                img_bytes = input_file.read()
-                data_url = (
-                    "data:image/png;base64," + base64.b64encode(img_bytes).decode("utf-8")
-                )
+                file_bytes = input_file.read()
+                file_type = input_file.type
+                base64_data = base64.b64encode(file_bytes).decode("utf-8")
+                data_url = f"data:{file_type};base64,{base64_data}"
 
-                output_text = client.generate_content_with_image(
+                output_text = client.generate_content_with_file(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt,
-                    image_url=data_url
+                    file_type=file_type,
+                    file_name=input_file.name,
+                    data_url=data_url
                 )
                 st.write(f"**{input_file.name}** の解析が完了しました。")
                 

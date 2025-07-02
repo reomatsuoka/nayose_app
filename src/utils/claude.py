@@ -26,9 +26,14 @@ class ClaudeClient:
 
         return response.content[0].text
     
-    def generate_content_with_image(self, system_prompt, user_prompt, image_url):
-        header, base64_data = image_url.split(',', 1)
-        media_type = header.split(';')[0].split(':')[1]
+    def generate_content_with_file(self, system_prompt, user_prompt, file_type, file_name, data_url):
+        _, base64_data = data_url.split(',', 1)
+
+        if file_type == "application/pdf":
+            source_type = "document"
+        else:
+            source_type = "image"
+
         response = self.client.messages.create(
             model=self.model_name,
             system=system_prompt,
@@ -39,10 +44,10 @@ class ClaudeClient:
                     "role": "user",
                     "content": [
                         {
-                            "type": "image",
+                            "type": source_type,
                             "source": {
                                 "type": "base64",
-                                "media_type": media_type,
+                                "media_type": file_type,
                                 "data": base64_data,
                             },
                         },
