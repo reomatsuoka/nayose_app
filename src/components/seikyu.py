@@ -45,14 +45,11 @@ def seikyu(
                     data_url=data_url
                 )
                 st.write(f"**{input_file.name}** の解析が完了しました。")
-                
-                header = "請求書番号,発行日,支払期日,合計金額\n"
-                csv_data = header + output_text
 
                 file_stem = input_file.name.rsplit('.', 1)[0]
                 csv_filename = f"analysis_result_{file_stem}.csv"
 
-                csv_files_data.append((csv_filename, csv_data))
+                csv_files_data.append((csv_filename, output_text))
 
             except Exception as e:
                 st.error(f"**{input_file.name}** の解析中にエラーが発生しました。詳細はターミナルログをご確認ください。")
